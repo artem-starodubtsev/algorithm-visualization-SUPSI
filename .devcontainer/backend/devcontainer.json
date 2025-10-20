@@ -1,8 +1,16 @@
 // Default Ubuntu-based DevContainer Template.
 // For more customization options, see https://containers.dev/implementors/json_reference
 {
-  name: "Default",
-  image: "ubuntu:24.04",
+  name: "backend",
+
+  build: {
+    // relative to the "context" below
+    dockerfile: "../../backend/Dockerfile",
+    // repo root (so you can COPY things if you need)
+    context: "../.."
+  },
+  workspaceMount: "type=bind,source=${localWorkspaceFolder}/backend,target=/workspaces/backend",
+  workspaceFolder: "/workspaces/backend",
 
   customizations : {
     // Configure JetBrains IDE-specific properties
@@ -22,6 +30,4 @@
     "ghcr.io/devcontainers/features/git" : {},
     // Add additional features to your project using auto-completion.
   },
-  // Comment out to connect as the root user.
-  remoteUser: "ubuntu"
 }
