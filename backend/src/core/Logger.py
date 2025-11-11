@@ -1,19 +1,10 @@
 from dataclasses import dataclass
-from enum import Enum
-from typing import Any
 
 
-## TODO add Actions class
-class Operation(Enum):
-    ASSIGN = 1
-    COMPARE = 2
-    HIGHLIGHT = 3
-
-@dataclass
+@dataclass(frozen=True)
 class Event:
     step: int
-    type: str
-    description: Any
+    type: dict
 
 
 class Logger:
@@ -21,8 +12,16 @@ class Logger:
         self._current_step: int = 0
         self._events: list[Event] = []
 
-    def log(self, kind, **data):
+    def log(self, action: dict):
         self._current_step += 1
         self._events.append(
-
+            Event(self._current_step, action)
         )
+
+    def export(self):
+        return [
+            {
+                'step': event.step,
+                'action': event.type
+            } for event in self._events
+        ]
