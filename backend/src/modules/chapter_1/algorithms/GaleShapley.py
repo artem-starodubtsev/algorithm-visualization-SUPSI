@@ -28,8 +28,8 @@ class GaleShapleyInstance(BaseModel):
 
 
 class GaleShapleySolution(BaseModel):
-    answer: list[int]
-    solution: list[str]
+    answer: list[tuple[int, int]]
+    log: list[dict]
 
 
 class GaleShapleyAlgorithm(AlgorithmInterface[GaleShapleyInstance, GaleShapleySolution]):
@@ -37,7 +37,7 @@ class GaleShapleyAlgorithm(AlgorithmInterface[GaleShapleyInstance, GaleShapleySo
     def solve(self, instance: GaleShapleyInstance) -> GaleShapleySolution:
         answer = [(-1, -1) for _ in range(min(len(instance.male_profile), len(instance.female_profile)))]
 
-        return GaleShapleySolution(answer=answer, solution=[])
+        return GaleShapleySolution(answer=answer, log=[])
 
 
 if __name__ == '__main__':

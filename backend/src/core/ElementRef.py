@@ -60,7 +60,7 @@ class ElementRef[T]:
                 'type':'compare',
                 'op': op,
                 'el': self.to_dict(),
-                'other': other.to_dict(),
+                'other': other.to_dict() if isinstance(other, ElementRef) else other,
                 'result': res
             }
         )

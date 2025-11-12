@@ -5,7 +5,7 @@ from ElementRef import ElementRef
 class LoggedValue[T](LoggedArray[T]):
     def __init__(self, name: str, logger: Logger, value: T | None = None) -> None:
         super().__init__(name, logger, 1)
-        if value:
+        if value is not None:
             self._data[0] = value
 
     def to_dict(self) -> dict:
