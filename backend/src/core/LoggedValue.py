@@ -1,6 +1,7 @@
-from core.Logger import Logger
-from LoggedArray import LoggedArray
-from ElementRef import ElementRef
+from .Logger import Logger
+from .LoggedArray import LoggedArray
+from .ElementRef import ElementRef
+
 
 class LoggedValue[T](LoggedArray[T]):
     def __init__(self, name: str, logger: Logger, value: T | None = None) -> None:
@@ -8,28 +9,35 @@ class LoggedValue[T](LoggedArray[T]):
         if value is not None:
             self._data[0] = value
 
+    def name(self) -> str:
+        return self._name
+
     def to_dict(self) -> dict:
         return {
             'name': self._name,
             'type': 'Value'
         }
 
-    def get_value(self, idx: int) -> T:
+    def get_value(self, idx: ElementRef | int) -> T:
+        idx = ElementRef.unwrap(idx)
         if idx != 0:
             raise IndexError()
         return self._data[0]
 
-    def set_value(self, idx: int, value: T) -> None:
+    def set_value(self, idx: ElementRef | int, value: T) -> None:
+        idx = ElementRef.unwrap(idx)
         if idx != 0:
             raise IndexError()
         self._data[idx] = value
 
-    def __getitem__(self, idx: int) -> ElementRef[T]:
+    def __getitem__(self, idx: ElementRef | int) -> ElementRef[T]:
+        idx = ElementRef.unwrap(idx)
         if idx != 0:
             raise IndexError()
         return ElementRef(self, 0, self._logger)
 
-    def __setitem__(self, idx: int, value: ElementRef[T] | T) -> None:
+    def __setitem__(self, idx: ElementRef | int, value: ElementRef[T] | T) -> None:
+        idx = ElementRef.unwrap(idx)
         if idx != 0:
             raise IndexError()
         v = ElementRef.unwrap(value)
@@ -41,3 +49,6 @@ class LoggedValue[T](LoggedArray[T]):
             }
         )
         self._data[idx] = v
+
+
+

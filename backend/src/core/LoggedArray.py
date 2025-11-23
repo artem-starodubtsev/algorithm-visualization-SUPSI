@@ -1,6 +1,6 @@
-from Logger import Logger
-from LoggedStructureInterface import LoggedStructureInterface
-from ElementRef import ElementRef
+from .Logger import Logger
+from .LoggedStructureInterface import LoggedStructureInterface
+from .ElementRef import ElementRef
 
 
 class LoggedArray[T](LoggedStructureInterface[T]):
@@ -16,6 +16,10 @@ class LoggedArray[T](LoggedStructureInterface[T]):
             self._capacity = len(data)
 
         self._logger: Logger = logger
+        self._logger.register_structure(self.to_dict())
+
+    def name(self) -> str:
+        return self._name
 
     def to_dict(self) -> dict:
         return {
@@ -24,10 +28,12 @@ class LoggedArray[T](LoggedStructureInterface[T]):
             'capacity': self._capacity
         }
 
-    def get_value(self, idx: int) -> T:
+    def get_value(self, idx: ElementRef | int) -> T:
+        idx = ElementRef.unwrap(idx)
         return self._data[idx]
 
-    def set_value(self, idx: int, value: T) -> None:
+    def set_value(self, idx: ElementRef | int, value: T) -> None:
+        idx = ElementRef.unwrap(idx)
         self._data[idx] = value
 
     def __str__(self):
@@ -36,10 +42,12 @@ class LoggedArray[T](LoggedStructureInterface[T]):
     def __len__(self) -> int:
         return self._capacity
 
-    def __getitem__(self, idx) -> ElementRef[T]:
+    def __getitem__(self, idx: ElementRef | int) -> ElementRef[T]:
+        idx = ElementRef.unwrap(idx)
         return ElementRef(self, idx, self._logger)
 
-    def __setitem__(self, idx: int, value: ElementRef[T] | T) -> None:
+    def __setitem__(self, idx: ElementRef | int, value: ElementRef[T] | T) -> None:
+        idx = ElementRef.unwrap(idx)
         v = ElementRef.unwrap(value)
         self._logger.log(
             {

@@ -3,6 +3,10 @@ from abc import ABC, abstractmethod
 class LoggedStructureInterface[T](ABC):
 
     @abstractmethod
+    def name(self) -> str:
+        raise NotImplementedError
+
+    @abstractmethod
     def to_dict(self) -> dict:
         raise NotImplementedError
 

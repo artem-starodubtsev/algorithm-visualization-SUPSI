@@ -1,12 +1,12 @@
-from Logger import Logger
+from .Logger import Logger
 from dataclasses import dataclass
-from LoggedStructureInterface import LoggedStructureInterface
+from .LoggedStructureInterface import LoggedStructureInterface
 
 
 @dataclass(frozen=True)
 class ElementRef[T]:
     _ref: LoggedStructureInterface[T]
-    _idx: int
+    _idx: int | tuple[int, int]
     _logger: Logger
 
     @property
@@ -18,11 +18,15 @@ class ElementRef[T]:
         return el.value if isinstance(el, ElementRef) else el
 
     def to_dict(self) -> dict:
-        return {
-            'ref': self._ref.to_dict(),
-            'idx': self._idx,
-            'value': self.value
+        d = {
+            'ref': self._ref.name(),
+            'value': self.value,
         }
+        if isinstance(self._idx, int):
+            d['idx'] = self._idx
+        else:
+            d['y'], d['x'] = self._idx
+        return d
 
     def swap(self, other: 'ElementRef[T]') -> None:
         if (self._ref is other._ref and self._idx == other._idx) or self is other:
@@ -31,8 +35,8 @@ class ElementRef[T]:
         b_ref, b_idx = other._ref, other._idx
         a_val = self.value
         b_val = other.value
-        #a_ref[a_idx] = b_val
-        #b_ref[b_idx] = a_val
+        # a_ref[a_idx] = b_val
+        # b_ref[b_idx] = a_val
         a_ref.set_value(a_idx, b_val)
         b_ref.set_value(b_idx, a_val)
         self._logger.log(
@@ -42,8 +46,6 @@ class ElementRef[T]:
                 'other': other.to_dict(),
             }
         )
-
-
 
     def _cmp(self, other: 'ElementRef[T] | T', op: str) -> bool:
         other_val = ElementRef.unwrap(other)
@@ -57,7 +59,7 @@ class ElementRef[T]:
                                           }[op])(other_val)
         self._logger.log(
             {
-                'type':'compare',
+                'type': 'compare',
                 'op': op,
                 'el': self.to_dict(),
                 'other': other.to_dict() if isinstance(other, ElementRef) else other,
@@ -66,14 +68,36 @@ class ElementRef[T]:
         )
         return res
 
-    def __eq__(self, other) -> bool: return self._cmp(other, 'eq')
+    def __eq__(self, other) -> bool:
+        return self._cmp(other, 'eq')
 
-    def __ne__(self, other) -> bool: return self._cmp(other, 'ne')
+    def __ne__(self, other) -> bool:
+        return self._cmp(other, 'ne')
 
-    def __lt__(self, other) -> bool: return self._cmp(other, 'lt')
+    def __lt__(self, other) -> bool:
+        return self._cmp(other, 'lt')
 
-    def __le__(self, other) -> bool: return self._cmp(other, 'le')
+    def __le__(self, other) -> bool:
+        return self._cmp(other, 'le')
 
-    def __gt__(self, other) -> bool: return self._cmp(other, 'gt')
+    def __gt__(self, other) -> bool:
+        return self._cmp(other, 'gt')
 
-    def __ge__(self, other) -> bool: return self._cmp(other, 'ge')
+    def __ge__(self, other) -> bool:
+        return self._cmp(other, 'ge')
+
+    def __add__(self, other) -> T:
+        val = ElementRef.unwrap(other)
+        return val + self.value
+
+    def __sub__(self, other) -> T:
+        val = ElementRef.unwrap(other)
+        return val - self.value
+
+    def __mul__(self, other) -> T:
+        val = ElementRef.unwrap(other)
+        return val * self.value
+
+    def __truediv__(self, other) -> T:
+        val = ElementRef.unwrap(other)
+        return val / self.value

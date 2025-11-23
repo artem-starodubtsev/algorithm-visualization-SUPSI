@@ -9,6 +9,7 @@ class Event:
 
 class Logger:
     def __init__(self):
+        self._structures: list = []
         self._current_step: int = 0
         self._events: list[Event] = []
 
@@ -18,10 +19,16 @@ class Logger:
             Event(self._current_step, action)
         )
 
+    def register_structure(self, structure: dict):
+        self._structures.append(structure)
+
     def export(self):
-        return [
-            {
-                'step': event.step,
-                'action': event.type
-            } for event in self._events
-        ]
+        return {
+            'init': self._structures,
+            'events': [
+                {
+                    'step': event.step,
+                    'action': event.type
+                } for event in self._events
+            ]
+        }
