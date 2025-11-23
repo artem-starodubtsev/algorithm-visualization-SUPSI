@@ -38,6 +38,8 @@ class GaleShapleySolution(BaseModel):
 
 
 class GaleShapleyAlgorithm(AlgorithmInterface[GaleShapleyInstance, GaleShapleySolution]):
+    def input_scheme(self) -> dict:
+        return GaleShapleyInstance.model_json_schema()
 
     def solve(self, instance: GaleShapleyInstance) -> GaleShapleySolution:
         logger = Logger()
@@ -87,21 +89,24 @@ class GaleShapleyAlgorithm(AlgorithmInterface[GaleShapleyInstance, GaleShapleySo
         return GaleShapleySolution(logs=logger.export(), answer=[(w, women_match[w].value) for w in range(n)])
 
 
-if __name__ == '__main__':
-    ins = GaleShapleyInstance(
-        male_profile=[
-            [1, 0, 3, 4, 2],  # Victor:  Bertha, Amy,   Diane, Erika, Clare
-            [3, 1, 0, 2, 4],  # Wyatt:   Diane,  Bertha, Amy,   Clare, Erika
-            [1, 4, 2, 3, 0],  # Xavier:  Bertha, Erika, Clare, Diane, Amy
-            [0, 3, 2, 1, 4],  # Yancey:  Amy,   Diane,  Clare, Bertha,Erika
-            [1, 3, 0, 4, 2],  # Zeus:    Bertha, Diane, Amy,   Erika, Clare
-        ],
-        female_profile=[
-            [4, 0, 1, 3, 2],  # Amy:   Zeus,  Victor, Wyatt,  Yancey, Xavier
-            [2, 1, 3, 0, 4],  # Bertha:Xavier,Wyatt,  Yancey, Victor, Zeus
-            [1, 2, 3, 4, 0],  # Clare: Wyatt, Xavier, Yancey, Zeus,   Victor
-            [0, 4, 3, 2, 1],  # Diane: Victor,Zeus,   Yancey, Xavier, Wyatt
-            [3, 1, 4, 2, 0],  # Erika: Yancey,Wyatt,  Zeus,   Xavier, Victor
-        ]
-    )
-    pprint(GaleShapleyAlgorithm().solve(ins))
+# if __name__ == '__main__':
+#
+#
+#     ins = GaleShapleyInstance(
+#         male_profile=[
+#             [1, 0, 3, 4, 2],  # Victor:  Bertha, Amy,   Diane, Erika, Clare
+#             [3, 1, 0, 2, 4],  # Wyatt:   Diane,  Bertha, Amy,   Clare, Erika
+#             [1, 4, 2, 3, 0],  # Xavier:  Bertha, Erika, Clare, Diane, Amy
+#             [0, 3, 2, 1, 4],  # Yancey:  Amy,   Diane,  Clare, Bertha,Erika
+#             [1, 3, 0, 4, 2],  # Zeus:    Bertha, Diane, Amy,   Erika, Clare
+#         ],
+#         female_profile=[
+#             [4, 0, 1, 3, 2],  # Amy:   Zeus,  Victor, Wyatt,  Yancey, Xavier
+#             [2, 1, 3, 0, 4],  # Bertha:Xavier,Wyatt,  Yancey, Victor, Zeus
+#             [1, 2, 3, 4, 0],  # Clare: Wyatt, Xavier, Yancey, Zeus,   Victor
+#             [0, 4, 3, 2, 1],  # Diane: Victor,Zeus,   Yancey, Xavier, Wyatt
+#             [3, 1, 4, 2, 0],  # Erika: Yancey,Wyatt,  Zeus,   Xavier, Victor
+#         ]
+#     )
+#     pprint(GaleShapleyAlgorithm().solve(ins))
+#     pprint(GaleShapleyAlgorithm().input_scheme())

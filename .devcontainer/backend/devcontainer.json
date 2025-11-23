@@ -9,6 +9,13 @@
     // repo root (so you can COPY things if you need)
     context: "../.."
   },
+  forwardPorts: [8000],
+  portsAttributes: {
+    "8000": {
+      "label": "FastAPI",
+      "onAutoForward": "openBrowser"
+    }
+  },
   workspaceMount: "type=bind,source=${localWorkspaceFolder}/backend,target=/workspaces/backend",
   workspaceFolder: "/workspaces/backend",
 
