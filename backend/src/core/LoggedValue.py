@@ -1,13 +1,12 @@
 from .Logger import Logger
 from .LoggedArray import LoggedArray
 from .ElementRef import ElementRef
+from copy import deepcopy
 
 
 class LoggedValue[T](LoggedArray[T]):
     def __init__(self, name: str, logger: Logger, value: T | None = None) -> None:
-        super().__init__(name, logger, 1)
-        if value is not None:
-            self._data[0] = value
+        super().__init__(name, logger, 1, data=[value] if value is not None else None)
 
     def name(self) -> str:
         return self._name
@@ -15,7 +14,8 @@ class LoggedValue[T](LoggedArray[T]):
     def to_dict(self) -> dict:
         return {
             'name': self._name,
-            'type': 'Value'
+            'type': 'Value',
+            'data': deepcopy(self._data)
         }
 
     def get_value(self, idx: ElementRef | int) -> T:
@@ -49,6 +49,3 @@ class LoggedValue[T](LoggedArray[T]):
             }
         )
         self._data[idx] = v
-
-
-

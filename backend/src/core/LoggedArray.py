@@ -1,7 +1,7 @@
 from .Logger import Logger
 from .LoggedStructureInterface import LoggedStructureInterface
 from .ElementRef import ElementRef
-
+from copy import deepcopy
 
 class LoggedArray[T](LoggedStructureInterface[T]):
     def __init__(self, name: str, logger: Logger, capacity: int | None = None, data: list[T] | None = None) -> None:
@@ -25,7 +25,8 @@ class LoggedArray[T](LoggedStructureInterface[T]):
         return {
             'name': self._name,
             'type': 'Array',
-            'capacity': self._capacity
+            'capacity': self._capacity,
+            'data': deepcopy(self._data)
         }
 
     def get_value(self, idx: ElementRef | int) -> T:
