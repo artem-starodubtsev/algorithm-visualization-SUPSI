@@ -5,7 +5,7 @@
 
   build: {
     // relative to the "context" below
-    dockerfile: "../../backend/Dockerfile",
+    dockerfile: "../../backend/Dockerfile.dev",
     // repo root (so you can COPY things if you need)
     context: "../.."
   },
