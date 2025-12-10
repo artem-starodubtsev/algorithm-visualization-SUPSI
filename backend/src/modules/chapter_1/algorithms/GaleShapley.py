@@ -19,9 +19,9 @@ class GaleShapleyInstance(BaseModel):
         ids = frozenset(range(l))
         for row in profile:
             if len(row) != l:
-                raise ValueError(f"Row should have equal width {l}.")
+                raise ValueError(f"Row should have equal width.")
             if frozenset(row) != ids:
-                raise ValueError(f"Row should have {l} different ids.")
+                raise ValueError(f"Row should have different ids.")
         return profile
 
     @model_validator(mode='after')

@@ -48,6 +48,10 @@ class ElementRef[T]:
         )
 
     def _cmp(self, other: 'ElementRef[T] | T', op: str) -> bool:
+        from .LoggedValue import LoggedValue
+        if isinstance(other, LoggedValue):
+            return NotImplemented
+
         other_val = ElementRef.unwrap(other)
         res = self.value.__getattribute__({
                                               'gt': "__gt__",
@@ -68,36 +72,50 @@ class ElementRef[T]:
         )
         return res
 
-    def __eq__(self, other) -> bool:
+    def __eq__(self, other: 'ElementRef[T] | T') -> bool:
         return self._cmp(other, 'eq')
 
-    def __ne__(self, other) -> bool:
+    def __ne__(self, other: 'ElementRef[T] | T') -> bool:
         return self._cmp(other, 'ne')
 
-    def __lt__(self, other) -> bool:
+    def __lt__(self, other: 'ElementRef[T] | T') -> bool:
         return self._cmp(other, 'lt')
 
-    def __le__(self, other) -> bool:
+    def __le__(self, other: 'ElementRef[T] | T') -> bool:
         return self._cmp(other, 'le')
 
-    def __gt__(self, other) -> bool:
+    def __gt__(self, other: 'ElementRef[T] | T') -> bool:
         return self._cmp(other, 'gt')
 
-    def __ge__(self, other) -> bool:
+    def __ge__(self, other: 'ElementRef[T] | T') -> bool:
         return self._cmp(other, 'ge')
 
-    def __add__(self, other) -> T:
-        val = ElementRef.unwrap(other)
-        return val + self.value
+    def __add__(self, other: 'ElementRef[T] | T') -> T:
+        return self.value + ElementRef.unwrap(other)
 
-    def __sub__(self, other) -> T:
-        val = ElementRef.unwrap(other)
-        return val - self.value
+    def __radd__(self, other: 'ElementRef[T] | T') -> T:
+        return ElementRef.unwrap(other) + self.value
 
-    def __mul__(self, other) -> T:
-        val = ElementRef.unwrap(other)
-        return val * self.value
+    def __sub__(self, other: 'ElementRef[T] | T') -> T:
+        return self.value - ElementRef.unwrap(other)
 
-    def __truediv__(self, other) -> T:
-        val = ElementRef.unwrap(other)
-        return val / self.value
+    def __rsub__(self, other: 'ElementRef[T] | T') -> T:
+        return ElementRef.unwrap(other) - self.value
+
+    def __mul__(self, other: 'ElementRef[T] | T') -> T:
+        return self.value * ElementRef.unwrap(other)
+
+    def __rmul__(self, other: 'ElementRef[T] | T') -> T:
+        return ElementRef.unwrap(other) * self.value
+
+    def __truediv__(self, other: 'ElementRef[T] | T') -> T:
+        return self.value / ElementRef.unwrap(other)
+
+    def __rtruediv__(self, other: 'ElementRef[T] | T') -> T:
+        return ElementRef.unwrap(other) / self.value
+
+    def __floordiv__(self, other: 'ElementRef[T] | T') -> T:
+        return self.value // ElementRef.unwrap(other)
+
+    def __rfloordiv__(self, other: 'ElementRef[T] | T') -> T:
+        return ElementRef.unwrap(other) // self.value

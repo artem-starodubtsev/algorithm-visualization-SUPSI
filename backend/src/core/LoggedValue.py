@@ -1,3 +1,5 @@
+from typing import Union
+
 from .Logger import Logger
 from .LoggedArray import LoggedArray
 from .ElementRef import ElementRef
@@ -49,3 +51,63 @@ class LoggedValue[T](LoggedArray[T]):
             }
         )
         self._data[idx] = v
+
+    @staticmethod
+    def unwrap(value: Union[ElementRef[T] , T , "LoggedValue[T]"]) -> T:
+        return value[0] if isinstance(value, LoggedValue) else value
+
+    def __add__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return self[0] + LoggedValue.unwrap(other)
+
+    def __radd__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return LoggedValue.unwrap(other) + self[0]
+
+
+    def __sub__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return self[0] - LoggedValue.unwrap(other)
+
+    def __rsub__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return LoggedValue.unwrap(other) - self[0]
+
+
+    def __mul__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return self[0] * LoggedValue.unwrap(other)
+
+    def __rmul__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return LoggedValue.unwrap(other) * self[0]
+
+
+    def __truediv__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return self[0] / LoggedValue.unwrap(other)
+
+    def __rtruediv__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return LoggedValue.unwrap(other) / self[0]
+
+
+    def __floordiv__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return self[0] // LoggedValue.unwrap(other)
+
+    def __rfloordiv__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> T:
+        return LoggedValue.unwrap(other) // self[0]
+
+
+    def __eq__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> bool:
+        l = LoggedValue.unwrap(other)
+        return self[0] == LoggedValue.unwrap(other)
+
+    def __ne__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> bool:
+        return self[0] != LoggedValue.unwrap(other)
+
+    def __lt__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> bool:
+        return self[0] < LoggedValue.unwrap(other)
+
+    def __le__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> bool:
+        return self[0] <= LoggedValue.unwrap(other)
+
+    def __gt__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> bool:
+        return self[0] > LoggedValue.unwrap(other)
+
+    def __ge__(self, other: Union[ElementRef[T], T, "LoggedValue[T]"]) -> bool:
+        return self[0] >= LoggedValue.unwrap(other)
+
+

@@ -5,6 +5,7 @@ import inspect
 
 from fastapi import FastAPI, HTTPException
 import uvicorn
+from pydantic import ValidationError
 
 app = FastAPI()
 
@@ -77,8 +78,21 @@ def get_single_module(module_path: str):
 def run_algorithm(module_path: str, payload: dict[str, Any]):
     AlgoCls, AlgoInstanceCls = get_algos(module_path)
     algo = AlgoCls()
-    instance = AlgoInstanceCls(**payload)
-    result = algo.solve(instance)
+    try:
+        instance = AlgoInstanceCls(**payload)
+    except ValidationError as e:
+        raise HTTPException(
+            status_code=400,
+            detail='\n'.join([f'{i}. {error['msg']}' for i, error in enumerate(e.errors(), 1)]),
+        )
+
+    try:
+        result = algo.solve(instance)
+    except Exception as e:
+        raise HTTPException(
+            status_code=400,
+            detail=str(e),
+        )
     return result.model_dump()
 
 
